@@ -81,7 +81,7 @@ float calc_O3(l1str *l1rec, int32_t ip, int16_t year, int16_t month, int16_t mda
 	 *using climatology*/
 	if (O3 < 100.0f)
 		O3 = EstimateDobson(year, month, mday, l1rec->lat[ip]);
-
+	/*DEfining boundaries such that O3 values does not exeed the LUT bounds*/
   if (O3 < 200.0)
     O3 = 200.01;
   if (O3 > 550.0)
@@ -287,7 +287,7 @@ if(ICW == -1)
       { Aice = 1.25/(1.25 + exp(-(pow((float)doy-208.0,2.0))/(1250.0)))-0.154;
         I0 = E0 * t_sol[ipb] * tg_sol[ipb] - Lr[ipb] * PI * mu / t_sen[ipb] / tg_sen[ipb];
         Ir = (Lt[ipb] - Lr[ipb]) * PI * mu / t_sen[ipb] / tg_sen[ipb];
-        //Aice=0.864;
+     
         if (salb*(1.0 - SIC) + Aice * SIC <= Ir/I0)
           salb=salb*(1.0 - SIC) + Aice * SIC;
       }
@@ -303,7 +303,6 @@ if(ICW == -1)
   /* Calculating cloud transmittance */
   I0 = E0 * t_sol[ipb] * tg_sol[ipb] - Lr[ipb] * PI * mu * t_sen[ipb] * tg_sen[ipb];
   Ir = Lt[ipb] * PI * mu * t_sen[ipb] * tg_sen[ipb];
-  //t= (E0-Ir)/(E0-salb*I0);
   t=(E0-sqrt(E0*E0-4.0*I0*salb*(E0-Ir)))/(2.0*I0*salb);
   }
   else
@@ -320,16 +319,12 @@ if(ICW == -1)
 	 * Atmos. Chem. Phys. 12, 7961–7975. https://doi.org/10.5194/acp-12-7961-2012
 	 * COT = (1/0.75)*(1/t-1.07)/(1-g)*/
 
-   /*Yang, P., Baum, B.A., 2003. SATELLITE REMOTE SENSING | Cloud Properties, in: Holton, J.R., Curry, J.A., Pyle, J.A. (Eds.), Encyclopedia of Atmospheric Sciences. Elsevier, pp. 1956–1965. https://doi.org/10.1016/B0-12-227090-8/00348-1
-   0.65um is sensitive primarily to COT */
- //COT = ((1.0/0.75)*(1.0/t-1.07))/(1.0-0.9755);
- COT = ((1.0/0.75)*(1.0/t-1.07))/(1.0-0.9755);
+   /*	Yang, P., Baum, B.A., 2003. SATELLITE REMOTE SENSING | Cloud Properties, 
+   	in: Holton, J.R., Curry, J.A., Pyle, J.A. (Eds.), Encyclopedia of Atmospheric Sciences. 
+   	Elsevier, pp. 1956–1965. https://doi.org/10.1016/B0-12-227090-8/00348-1
+   	0.65um is sensitive primarily to COT */
+ COT = ((1.0/0.75)*(1.0/t-1.07))/(1.0-0.85);
 
-/*  if (COT < 0.01)
-    COT = 0.01;
-  if (COT >= 64.0)
-    COT = 63.99;
-*/
   return(COT);
 }
 
@@ -401,19 +396,6 @@ float calc_par_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, float L
   float tmstep;
   float Ed[NWL];
   float par=0;
-//  float icefrac;
-
-  /* Perovich, D.K., Nghiem, S. V., Markus, T., Schweiger, A., 2007.
-   * Seasonal evolution and interannual variability of the local solar
-   * energy absorbed by the Arctic sea ice–ocean system. J. Geophys. Res.
-   * 112, C03005. https://doi.org/10.1029/2006JC003558 */
-/*  icefrac=salb/0.846;
-
-  if (icefrac > 0.99)
-    icefrac = 0.99;
-
-  if (icefrac < 0)
-    icefrac = 0; */
 
   /* Calculate PAR at each time step */
   for (indx = 0; indx <= step; indx++)
@@ -432,7 +414,6 @@ float calc_par_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, float L
 
           if (!choice)
             par_temp[indx] *= (1.0 - salb);
-            //par_temp[indx] *= (1.0 - icefrac);
         }
       }
 
@@ -461,10 +442,10 @@ float calc_par_z(l2str *l2rec, int32_t ip, int nbands, int bstart, int bstop, fl
 /* Calculate surface iPAR      */
 /*******************************/
 /*	1. Wavelength = 290 : 700 : 5
-		2. ThetaS = 0 : 90 : 5
-		3. Ozone = 200 : 550 : 50
-		4. Cloud optical Thickness = 0 to 64 = c(0,1,2,4,8,16,32,64)
-		5. Surface Albedo = 0.05 : 0.95 : 0.15
+	2. ThetaS = 0 : 90 : 5
+	3. Ozone = 200 : 550 : 50
+	4. Cloud optical Thickness = 0 to 64 = c(0,1,2,4,8,16,32,64)
+	5. Surface Albedo = 0.05 : 0.95 : 0.15
 */
 
 /* Laliberté, J., Bélanger, S., Frouin, R.J., 2016.
@@ -480,18 +461,6 @@ float calc_ipar_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, double
   float ipar=0.0;
   //float icefrac;
   float hour = sec/3600.0;
-
-  /* Perovich, D.K., Nghiem, S. V., Markus, T., Schweiger, A., 2007.
-   * Seasonal evolution and interannual variability of the local solar
-   * energy absorbed by the Arctic sea ice–ocean system. J. Geophys. Res.
-   * 112, C03005. https://doi.org/10.1029/2006JC003558 */
-/*  icefrac=salb/0.846;
-
-  if (icefrac > 0.99)
-    icefrac = 0.99;
-
-  if (icefrac < 0)
-    icefrac = 0;*/
 
   /* Calculate iPAR */
   sunangs_(&intyear, &intday, &hour, l1rec->lon+ip,l1rec->lat+ip, &solz, &sola); //Getting solar zenith angle for the time of the day
@@ -531,7 +500,7 @@ float calc_ipar_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, double
     /* of Geophysical Research: Oceans, 118(9), 4241–4255.  */
     /* https://doi.org/10.1002/jgrc.20308                   */
     /********************************************************/
-  	l1str *l1rec = l2rec->l1rec;
+    l1str *l1rec = l2rec->l1rec;
     filehandle *l1file = l1rec->l1file;
     float rrs[nbands],u[nbands],a[nbands],bbp[nbands];
     float chi,etaw;
