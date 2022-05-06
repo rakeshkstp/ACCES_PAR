@@ -3,12 +3,16 @@
 ## Details of the files
 * **Ed0plus_LUT_5nm_v2.dat**
 
+**INPUT:** Solar Zenith angle, Surface albedo, Cloud optical thickness, Ozone optical thickness.
 
-
+**OUTPUT:** Downwelling irradiance just above the sea-surface from 350 nm to 700 nm at 5nm intervals.
+____________________________________________________________________________________________________
 
 * **Ed0moins_LUT_5nm_v2.dat**
 
+**INPUT:** Solar Zenith angle, Surface albedo, Cloud optical thickness, Ozone optical thickness.
 
+**OUTPUT:** Downwelling irradiance just below the sea-surface from 350 nm to 700 nm at 5nm intervals.
 
 
 ## Reference
