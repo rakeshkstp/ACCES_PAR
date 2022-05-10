@@ -438,48 +438,6 @@ float calc_par_z(l2str *l2rec, int32_t ip, int nbands, int bstart, int bstop, fl
 }
 
 
-/*******************************/
-/* Calculate surface iPAR      */
-/*******************************/
-/*	1. Wavelength = 290 : 700 : 5
-	2. ThetaS = 0 : 90 : 5
-	3. Ozone = 200 : 550 : 50
-	4. Cloud optical Thickness = 0 to 64 = c(0,1,2,4,8,16,32,64)
-	5. Surface Albedo = 0.05 : 0.95 : 0.15
-*/
-
-/* Laliberté, J., Bélanger, S., Frouin, R.J., 2016.
- * Evaluation of satellite-based algorithms to estimate
- * photosynthetically available radiation (PAR) reaching the
- * ocean surface at high northern latitudes.
- * Remote Sens. Environ. 184, 199–211.
- * https://doi.org/10.1016/j.rse.2016.06.014 */
-float calc_ipar_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, double sec, float LUT[NWL][NTHETA][NO3][NCOT][NALB], float O3, float COT, float salb, int choice)
-{ float solz, sola;
-  int intyear = year, intday = doy;
-  float Ed[NWL];
-  float ipar=0.0;
-  //float icefrac;
-  float hour = sec/3600.0;
-
-  /* Calculate iPAR */
-  sunangs_(&intyear, &intday, &hour, l1rec->lon+ip,l1rec->lat+ip, &solz, &sola); //Getting solar zenith angle for the time of the day
-  if (solz >= 90.0 || solz < 0.0)
-    ipar = 0.0;
-  else
-  { ipar = calc_par_uqar_(&solz,&O3,&COT,&salb,LUT,Ed);	//The unit for PAR is muE m^-2 s^-1
-    if (ipar>0)
-      ipar /= 1000000.0;		//The unit for PAR converted to E m^-2 s^-1
-    else
-      ipar = 0.0;
-
-    if (!choice)
-      ipar *= (1.0 - salb);
-  }
-
- return(ipar);
-}
-
 
  /*********************************************************/
  /* Calculate Kd PAR                                      */
@@ -578,52 +536,4 @@ float calc_ipar_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, double
       kdpar=4.6051*kd490/(6.07*kd490+3.2);
 
   	return(kdpar);
- }
-
-
- /*******************************/
- /* Calculate isolume           */
- /*******************************/
- /* Letelier, R.M., Karl, D.M., Abbott, M.R., Bidigare, R.R., 2004. Light driven
-  * seasonal patterns of chlorophyll and nitrate in the lower euphotic zone of the
-  * North Pacific Subtropical Gyre. Limnol. Oceanogr. 49, 508–519.
-  * https://doi.org/10.4319/lo.2004.49.2.0508
-  */
- float calc_isolume_uqar(int32_t ip, l2str *l2rec, int16_t year, int16_t doy, float LUT[NWL][NTHETA][NO3][NCOT][NALB], float trise, float deltaT, int step, float O3, float COT, float salb, int nbands, int bstart, int bstop, float depth)
- { float isolume = BAD_FLT;
-   float par0m, kdpar;
-   l1str *l1rec = l2rec->l1rec;
-
-   par0m=calc_par_surf(ip, l1rec, year, doy, LUT, trise, deltaT, step, O3, COT, salb, 0);
-   kdpar=calc_kdpar_uqar(l2rec, ip, nbands, bstart, bstop);
-
-   if (kdpar > 0 && depth > 0)
-     isolume=(-1.0/kdpar)*log(0.415/par0m);
-   else
-    isolume = BAD_FLT;
-
-  if (isolume>depth)
-    isolume=depth;
-
-     return(isolume);
- }
-
- /***************************************/
- /* Calculate depth for PAR 1% and 10%  */
- /***************************************/
- float calc_dPAR_uqar(l2str *l2rec, int32_t ip, int nbands, int bstart, int bstop, float depth, float pcnt)
- { float pdepth;
-   float kdpar;
-
-   kdpar=calc_kdpar_uqar(l2rec, ip, nbands, bstart, bstop);
-
-   if (kdpar > 0 && depth > 0)
-      pdepth=(-1.0/kdpar)*log(pcnt/100.0);
-   else
-      pdepth=BAD_FLT;
-
-   if(pdepth>depth)
-    pdepth=depth;
-
-   return(pdepth);
  }
