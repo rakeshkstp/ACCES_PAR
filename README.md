@@ -8,11 +8,13 @@ Scripts to estimate PAR reaching the coastal Arctic seafloor.
 ## Where to place the scripts?
 * Download and place contents of this repository in `$OCSSWROOT/ocssw_src/src/l2gen`.
 * Add the following files to `$OCSSWROOT/ocssw_src/src/l2gen/CMakeLists.txt` in the `L2GEN_PRODUCT_FILES` section.
-  * `get_uqar_utils.c`
-  * `calc_uqar_utils.c`
-  * `interpol_ed0LUT_5nm_v2.f`
-  * `calc_par_uqar.f`
-  * `get_ed0_LUT_v2.f`
+  ```
+  get_uqar_utils.c
+  calc_uqar_utils.c
+  interpol_ed0LUT_5nm_v2.f
+  calc_par_uqar.f
+  get_ed0_LUT_v2.f
+  ```
 * Add the following definitions to `l2prod.h`. You can choose your own product ID and name, if it is available. 
   ```
   #define CAT_uqar_par0p              348
