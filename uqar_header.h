@@ -30,10 +30,4 @@ float calc_par_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, float L
 
 float calc_par_z(l2str *l2rec, int32_t ip, int nbands, int bstart, int bstop, float par0m, float depth);
 
-float calc_ipar_surf(int32_t ip, l1str *l1rec, int16_t year, int16_t doy, double sec, float LUT[NWL][NTHETA][NO3][NCOT][NALB], float O3, float COT, float salb, int choice);
-
 float calc_kdpar_uqar(l2str *l2rec, int32_t ip, int nbands, int bstart, int bstop);
-
-float calc_isolume_uqar(int32_t ip, l2str *l2rec, int16_t year, int16_t doy, float LUT[NWL][NTHETA][NO3][NCOT][NALB], float trise, float deltaT, int step, float O3, float COT, float salb, int nbands, int bstart, int bstop, float depth);
-
-float calc_dPAR_uqar(l2str *l2rec, int32_t ip, int nbands, int bstart, int bstop, float depth, float pcnt);
