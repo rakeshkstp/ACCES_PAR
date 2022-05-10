@@ -24,4 +24,5 @@ Laliberté, J., Bélanger, S., Frouin, R.J., 2016. Evaluation of satellite-based
 
 ## Author
 **Rakesh Kumar Singh**
+
 **[Simon Bélanger](https://github.com/belasi01)**
