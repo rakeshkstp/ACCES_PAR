@@ -107,9 +107,6 @@ void get_uqar_utils(l2str *l2rec, int prodnum, float prod[])
         case CAT_uqar_par0m:
               prod[ip] = calc_par_surf(ip, l1rec, year, doy, LUT0m, trise, deltaT, step, O3, COT, salb, 0);
               break;
-        case CAT_uqar_ipar:
-              prod[ip] = calc_ipar_surf(ip, l1rec, year, doy, sec, LUT0p, O3, COT, salb, 1);
-              break;
         case CAT_uqar_parb:
               par0m=calc_par_surf(ip, l1rec, year, doy, LUT0m, trise, deltaT, step, O3, COT, salb, 0);
               prod[ip] = calc_par_z(l2rec, ip, nbands, bstart, bstop, par0m, -z);
@@ -128,18 +125,6 @@ void get_uqar_utils(l2str *l2rec, int prodnum, float prod[])
               break;
         case CAT_uqar_icw:
               prod[ip] = ICW;
-              break;
-        case CAT_uqar_tc:
-              prod[ip] = cldtr;
-              break;
-        case CAT_uqar_isolume:
-              prod[ip] = calc_isolume_uqar(ip, l2rec, year, doy, LUT0m, trise, deltaT, step, O3, COT, salb, nbands, bstart, bstop, -z);
-              break;
-        case CAT_uqar_1pc:
-              prod[ip] = calc_dPAR_uqar(l2rec, ip, nbands, bstart, bstop, -z, 1.0);
-              break;
-        case CAT_uqar_10pc:
-              prod[ip] = calc_dPAR_uqar(l2rec, ip, nbands, bstart, bstop, -z, 10.0);
               break;
         default:
               printf("Unknown product id: %d \n", prodnum);
