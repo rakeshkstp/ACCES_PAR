@@ -41,9 +41,9 @@ Scripts to estimate PAR reaching the coastal Arctic seafloor.
   case CAT_uqar_O3:
   case CAT_uqar_salb:
   case CAT_uqar_icw:
-  get_uqar_utils(l2rec, p->cat_ix, fbuf);
-  pbuf = (VOIDP) fbuf;
-  break;       
+    get_uqar_utils(l2rec, p->cat_ix, fbuf);
+    pbuf = (VOIDP) fbuf;
+    break;       
   ```
 * Compile the code as described [here](https://seadas.gsfc.nasa.gov/build_ocssw/#building-the-code).
 * Now you can run `l2gen` and it will identify the product names described in `$OCDATAROOT/common/product.xml`.
