@@ -15,16 +15,16 @@ Scripts to estimate PAR reaching the coastal Arctic seafloor.
   calc_par_uqar.f
   get_ed0_LUT_v2.f
   ```
-* Add the following definitions to `l2prod.h`. You can choose your own product ID and name, if it is available. 
+* Add the following definitions to `l2prod.h`. You can choose your own product IDs (XXXs) and name, if it is available. 
   ```
-  #define CAT_uqar_par0p              348
-  #define CAT_uqar_par0m              349
-  #define CAT_uqar_parb               350
-  #define CAT_uqar_icw                351
-  #define CAT_uqar_COT                352
-  #define CAT_uqar_salb               353
-  #define CAT_uqar_O3                 354
-  #define CAT_uqar_kdpar              360
+  #define CAT_uqar_par0p              XXX
+  #define CAT_uqar_par0m              XXX
+  #define CAT_uqar_parb               XXX
+  #define CAT_uqar_icw                XXX
+  #define CAT_uqar_COT                XXX
+  #define CAT_uqar_salb               XXX
+  #define CAT_uqar_O3                 XXX
+  #define CAT_uqar_kdpar              XXX
   ```
 * Add the definitions of these products in `$OCDATAROOT/common/product.xml`.
 * Add the following line to `l12_proto.h`.
